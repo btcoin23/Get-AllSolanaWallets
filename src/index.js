@@ -6,7 +6,7 @@ import getAll from './getAll.js'
 import express, { json } from 'express';
 import cors from 'cors';
 
-const CUSTOM_RPC_URL = 'https://mainnet.helius-rpc.com/?api-key=862ad7b7-85d0-42aa-9f78-db1e34dc241b'; // Replace with your custom RPC URL
+const CUSTOM_RPC_URL = 'https://white-neat-pool.solana-mainnet.quiknode.pro/cfe67fec23b12040'; // Replace with your custom RPC URL
 const MONGO_URL = 'mongodb+srv://innovativetech0926:twhPbLJUxWHXB8Vx@innotech.5svyawa.mongodb.net/Wallets'
 const connection = new Connection(CUSTOM_RPC_URL)
 const app = express();
@@ -41,7 +41,7 @@ const getWallets = async () => {
     }catch(e){
         console.log(e)
     }
-    setTimeout(getWallets, 1000 * 10);
+    setTimeout(getWallets, 1000 * 5);
 }
 
 connect(MONGO_URL);
