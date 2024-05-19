@@ -1,0 +1,56 @@
+import { Connection } from '@solana/web3.js';
+import { connect } from 'mongoose';
+import Wallet from './models/Wallet.js'
+import getAll from './getAll.js'
+
+import express, { json } from 'express';
+import cors from 'cors';
+
+const CUSTOM_RPC_URL = 'https://mainnet.helius-rpc.com/?api-key=862ad7b7-85d0-42aa-9f78-db1e34dc241b'; // Replace with your custom RPC URL
+const MONGO_URL = 'mongodb+srv://innovativetech0926:twhPbLJUxWHXB8Vx@innotech.5svyawa.mongodb.net/Wallets'
+const connection = new Connection(CUSTOM_RPC_URL)
+const app = express();
+const PORT = 5000;
+
+const start = async () => {
+    await connect(MONGO_URL);
+    console.log('Connected to MongoDB...');    
+    app.use(json());
+    app.use(cors());
+    app.use('/api/all', getAll);
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    getWallets()
+}
+
+let preBlockHash;
+const getWallets = async () => {
+    try{
+        const slot = await connection.getSlot();
+        const block = await connection.getBlock(slot, {maxSupportedTransactionVersion: 0})
+        if(block.blockhash !== preBlockHash){
+            console.log(block.blockhash, block.parentSlot)
+            if(block && block.transactions){
+                block.transactions.forEach(tx => {
+                    tx.transaction.message?.accountKeys?.forEach(async(i) => {
+                        if(i.toString().length == 44){
+                            // console.log(i.toString())
+                            const exist = await Wallet.findOne({address: i.toString()})
+                            if(!exist){
+                                const wallet = new Wallet({
+                                  address: i.toString()
+                                });
+                                await wallet.save();
+                            }
+                        }
+                    })
+                });
+            }
+        }
+        preBlockHash = block.blockhash;
+    }catch(e){
+        console.log(e)
+    }
+    getWallets()
+}
+
+start()
