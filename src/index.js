@@ -19,14 +19,14 @@ const start = async () => {
     app.use(cors());
     app.use('/api/all', getAll);
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-    getWallets()
+    // getWallets()
 }
 
 let preBlockHash;
 const getWallets = async () => {
     try{
         const slot = await connection.getSlot();
-        const block = await connection.getBlock(slot, {maxSupportedTransactionVersion: 0})
+        const block = await connection.getBlock(slot, {maxSupportedTransactionVersion: 0}, "confirmed")
         if(block.blockhash !== preBlockHash){
             console.log(block.blockhash, block.parentSlot)
             if(block && block.transactions){
@@ -50,7 +50,7 @@ const getWallets = async () => {
     }catch(e){
         console.log(e)
     }
-    getWallets()
+    setTimeout(getWallets, 1000 * 5);
 }
 
 start()

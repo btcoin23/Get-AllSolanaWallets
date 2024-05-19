@@ -4,10 +4,12 @@ import Wallet from './models/Wallet.js'
 
 router.get('/', async (req, res) => {
  try {
-    const wallets = await Wallet.find({});
+    let wallets = await Wallet.find({});
+    const totalNum = wallets.length
+    wallets = wallets.map(i => i.address)
     // console.log(wallets)
     //const result = await wallets.json()
-    res.status(200).json({ success: true, result: wallets });
+    res.status(200).json({ success: true, total: totalNum, result: wallets });
  } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching wallets' });
  }
