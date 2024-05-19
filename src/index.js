@@ -12,15 +12,6 @@ const connection = new Connection(CUSTOM_RPC_URL)
 const app = express();
 const PORT = 5000;
 
-const start = async () => {
-    await connect(MONGO_URL);
-    console.log('Connected to MongoDB...');    
-    app.use(json());
-    app.use(cors());
-    app.use('/api/all', getAll);
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-    // getWallets()
-}
 
 let preBlockHash;
 const getWallets = async () => {
@@ -50,7 +41,13 @@ const getWallets = async () => {
     }catch(e){
         console.log(e)
     }
-    setTimeout(getWallets, 1000 * 5);
+    setTimeout(getWallets, 1000 * 10);
 }
 
-start()
+connect(MONGO_URL);
+console.log('Connected to MongoDB...');    
+app.use(json());
+app.use(cors());
+app.use('/api/all', getAll);
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+getWallets()
