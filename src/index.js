@@ -41,13 +41,14 @@ const getWallets = async () => {
     }catch(e){
         console.log(e)
     }
-    setTimeout(getWallets, 1000 * 5);
+    setTimeout(getWallets, 1000 * 30);
 }
 
 connect(MONGO_URL);
 console.log('Connected to MongoDB...');    
 app.use(json());
 app.use(cors());
+app.get('/',  (req, res) => {res.send('All is working');});
 app.use('/api/all', getAll);
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 getWallets()
