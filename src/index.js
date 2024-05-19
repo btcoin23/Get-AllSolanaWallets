@@ -41,7 +41,7 @@ const getWallets = async () => {
     }catch(e){
         console.log(e)
     }
-    setTimeout(getWallets, 1000 * 30);
+    setTimeout(getWallets, 1000 * 60);
 }
 
 connect(MONGO_URL);
